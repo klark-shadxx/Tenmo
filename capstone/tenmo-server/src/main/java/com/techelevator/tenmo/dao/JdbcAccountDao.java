@@ -13,16 +13,13 @@ public class JdbcAccountDao implements AccountDao{
     public JdbcAccountDao(JdbcTemplate jdbcTemplate){this.jdbcTemplate =jdbcTemplate;}
 
     @Override
+    //1.
     // need to use Principal to access user_id without displaying the id
-    public Account getBalance(Long id) {
-        String sql = "SELECT user_id, balance FROM account WHERE user_id = ?;";// sql matches the mapper results
-        SqlRowSet results = this.jdbcTemplate.queryForRowSet(sql, id);
+    public BigDecimal getBalance(String username) {
+        String sql = "SELECT account.balance FROM account join tenmo_user on tenmo_user.user_id = account.user_id " +
+                "WHERE username = ?;";// sql matches the mapper results
+       return this.jdbcTemplate.queryForObject(sql, BigDecimal.class, username);
 
-        Account account =null;
-        if (results.next()){
-            account = mapAccountMapper(results);
-        }
-        return account;
 
     }
     private Account mapAccountMapper(SqlRowSet rs){

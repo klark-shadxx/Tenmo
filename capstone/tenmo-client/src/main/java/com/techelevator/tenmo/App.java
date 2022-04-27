@@ -1,13 +1,17 @@
 package com.techelevator.tenmo;
 
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
+import org.springframework.web.client.RestOperations;
+import org.springframework.web.client.RestTemplate;
 
 public class App {
 
     private static final String API_BASE_URL = "http://localhost:8080/";
+    private final RestTemplate restTemplate = new RestTemplate();
 
     private final ConsoleService consoleService = new ConsoleService();
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
@@ -32,6 +36,7 @@ public class App {
             consoleService.printLoginMenu();
             menuSelection = consoleService.promptForMenuSelection("Please choose an option: ");
             if (menuSelection == 1) {
+
                 handleRegister();
             } else if (menuSelection == 2) {
                 handleLogin();
@@ -84,8 +89,8 @@ public class App {
         }
     }
 
-	private void viewCurrentBalance() {
-		// TODO Auto-generated method stub
+	private void viewCurrentBalance () {
+
 		
 	}
 
