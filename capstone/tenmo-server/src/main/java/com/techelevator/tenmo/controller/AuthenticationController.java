@@ -2,9 +2,11 @@ package com.techelevator.tenmo.controller;
 
 import javax.validation.Valid;
 
+import com.techelevator.tenmo.dao.AccountDao;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -26,6 +28,7 @@ import org.springframework.web.server.ResponseStatusException;
  * Controller to authenticate users.
  */
 @RestController
+
 public class AuthenticationController {
 
     private final TokenProvider tokenProvider;
@@ -48,7 +51,7 @@ public class AuthenticationController {
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = tokenProvider.createToken(authentication, false);
-        
+
         User user = userDao.findByUsername(loginDto.getUsername());
 
         return new LoginResponse(jwt, user);
