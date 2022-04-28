@@ -3,6 +3,7 @@ package com.techelevator.tenmo.controller;
 import com.techelevator.tenmo.dao.AccountDao;
 import com.techelevator.tenmo.dao.UserDao;
 import com.techelevator.tenmo.model.Account;
+import com.techelevator.tenmo.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,12 @@ public class AccountController {
 
     @Autowired
     UserDao userDao;
+
+    @RequestMapping(path="/user", method = RequestMethod.GET)
+    public User getUser(Principal principal) {
+        return userDao.findByUsername(principal.getName());
+    }
+
 
     @RequestMapping(path="/account", method = RequestMethod.GET)
     public BigDecimal getAccount(Principal principal) {

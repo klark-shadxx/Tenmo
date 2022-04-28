@@ -2,11 +2,16 @@ package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
+import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
-import org.springframework.web.client.RestOperations;
+import com.techelevator.tenmo.services.UserService;
 import org.springframework.web.client.RestTemplate;
+
+import java.math.BigDecimal;
+import java.util.Scanner;
 
 public class App {
 
@@ -15,9 +20,11 @@ public class App {
 
     private final ConsoleService consoleService = new ConsoleService();
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
-
+    private final AccountService accountService = new AccountService();
+    private final UserService userService = new UserService();
     private AuthenticatedUser currentUser;
 
+    Scanner scanner = new Scanner();
     public static void main(String[] args) {
         App app = new App();
         app.run();
@@ -60,6 +67,9 @@ public class App {
     private void handleLogin() {
         UserCredentials credentials = consoleService.promptForCredentials();
         currentUser = authenticationService.login(credentials);
+
+        accountService.setAuthToken(currentUser.getToken());
+        userService.setAuthToken(currentUser.getToken());
         if (currentUser == null) {
             consoleService.printErrorMessage();
         }
@@ -77,6 +87,8 @@ public class App {
             } else if (menuSelection == 3) {
                 viewPendingRequests();
             } else if (menuSelection == 4) {
+                // prompt user to enter a name, then make separate if statement and return error if your name is entered
+                System.out.println("");
                 sendBucks();
             } else if (menuSelection == 5) {
                 requestBucks();
@@ -90,11 +102,14 @@ public class App {
     }
 
 	private void viewCurrentBalance () {
-
+        BigDecimal balance = accountService.getBalance();
+        System.out.println(balance);
 		
 	}
 
 	private void viewTransferHistory() {
+
+
 		// TODO Auto-generated method stub
 		
 	}
@@ -105,6 +120,9 @@ public class App {
 	}
 
 	private void sendBucks() {
+        User username = userService.getUser();
+        System.out.println(username);
+
 		// TODO Auto-generated method stub
 		
 	}

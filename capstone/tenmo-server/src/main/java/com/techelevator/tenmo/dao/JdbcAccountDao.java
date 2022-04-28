@@ -6,6 +6,8 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.List;
+
 @Component //
 public class JdbcAccountDao implements AccountDao{
     private JdbcTemplate jdbcTemplate;
@@ -18,10 +20,12 @@ public class JdbcAccountDao implements AccountDao{
     public BigDecimal getBalance(String username) {
         String sql = "SELECT account.balance FROM account join tenmo_user on tenmo_user.user_id = account.user_id " +
                 "WHERE username = ?;";// sql matches the mapper results
-       return this.jdbcTemplate.queryForObject(sql, BigDecimal.class, username);
-
+        return this.jdbcTemplate.queryForObject(sql, BigDecimal.class, username);
 
     }
+    //public List<Transfers>
+
+
     private Account mapAccountMapper(SqlRowSet rs){
         Account account = new Account();
         account.setId(rs.getLong("user_id"));
