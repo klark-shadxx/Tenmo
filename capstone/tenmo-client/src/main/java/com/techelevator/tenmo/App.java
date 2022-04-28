@@ -11,6 +11,7 @@ import com.techelevator.tenmo.services.UserService;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class App {
@@ -24,7 +25,7 @@ public class App {
     private final UserService userService = new UserService();
     private AuthenticatedUser currentUser;
 
-    Scanner scanner = new Scanner();
+//   2
     public static void main(String[] args) {
         App app = new App();
         app.run();
@@ -77,6 +78,7 @@ public class App {
 
     private void mainMenu() {
         int menuSelection = -1;
+        String menuSelection2 = "";
         while (menuSelection != 0) {
             consoleService.printMainMenu();
             menuSelection = consoleService.promptForMenuSelection("Please choose an option: ");
@@ -87,10 +89,14 @@ public class App {
             } else if (menuSelection == 3) {
                 viewPendingRequests();
             } else if (menuSelection == 4) {
-                // prompt user to enter a name, then make separate if statement and return error if your name is entered
-                System.out.println("");
+//                System.out.println(userService.getAllUser());
                 sendBucks();
+                menuSelection2 = consoleService.promptForString("Who do you want to send money to?: ");
+                // prompt user to enter a name, then make separate if statement and return error if your name is entered
+//                lowerCaseinput = toLowerCase(menuSelection2)
+
             } else if (menuSelection == 5) {
+                menuSelection2 = consoleService.promptForString("Who do you want to get money from (enter User ID?: ");
                 requestBucks();
             } else if (menuSelection == 0) {
                 continue;
@@ -104,28 +110,46 @@ public class App {
 	private void viewCurrentBalance () {
         BigDecimal balance = accountService.getBalance();
         System.out.println(balance);
-		
+
 	}
 
 	private void viewTransferHistory() {
 
 
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	private void viewPendingRequests() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	private void sendBucks() {
-        User username = userService.getUser();
-        System.out.println(username);
+//        userService.getAllUser();
+        User [] users = userService.getAllUser();
+        for(User user: users) {
+            System.out.println(user.getId() + " " + user.getUsername());
+            //after prompted for user
+            //scan the list of users (where that is? no clue)
+        }
+        BigDecimal moneyInput = consoleService.promptForBigDecimal("How much would you like to send?: ");
+       BigDecimal balance = accountService.getBalance().subtract(moneyInput);
+        System.out.println(balance);
+        //if the user entered doesnt exists  enter an error, and make them enter another user
+        //if user does exist, prompt for the amount of money
+
+        //
+
+        //once you enter the amount of money,
+        //if you dont have enough money, give an error
+        //if you do have enough money, deduct that from your initial balance
+//        User username = userService.getUser();
+//        System.out.println(username);
 
 		// TODO Auto-generated method stub
-		
-	}
+
+    }
 
 	private void requestBucks() {
 		// TODO Auto-generated method stub

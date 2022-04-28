@@ -20,10 +20,11 @@ public class AccountController {
 
     @Autowired
     UserDao userDao;
+//neeed a post mapping to update the current  blance so it desnt reset
 
     @RequestMapping(path="/user", method = RequestMethod.GET)
-    public User getUser(Principal principal) {
-        return userDao.findByUsername(principal.getName());
+    public List <User> getUsers() {
+        return userDao.findAll();
     }
 
 

@@ -2,11 +2,20 @@ package com.techelevator.tenmo.model;
 
 public class User {
 
+
     private Long id;
     private String username;
 
     public Long getId() {
         return id;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                '}';
     }
 
     public void setId(Long id) {

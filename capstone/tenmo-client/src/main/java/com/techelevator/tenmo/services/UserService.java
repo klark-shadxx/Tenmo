@@ -1,13 +1,17 @@
 package com.techelevator.tenmo.services;
 
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.User;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 
 public class UserService {
     private static final String API_BASE_URL = "http://localhost:8080/";
@@ -43,14 +47,24 @@ public class UserService {
     }
 
 
-    public User getUser() {
+    public User[] getAllUser() {
 
-        User username = restTemplate.exchange(// performs the request
-                API_BASE_URL + "user", //need url
-                HttpMethod.GET, // request type is a GET; Http is an enum method
-                makeAuthEntity(),// header that contains token to access server
-                User.class).getBody(); // what object do I want to deserialize to?
+        User [] listOfUsersNames = null;
+    try {
 
-        return username;
+    listOfUsersNames = restTemplate.exchange(// performs the request
+            API_BASE_URL + "user", //need url
+            HttpMethod.GET, // request type is a GET; Http is an enum method
+            makeAuthEntity(),// header that contains token to access server
+            User[].class).getBody(); // what object do I want to deserialize to?
+
+
+} catch (RestClientResponseException | ResourceAccessException e){
+    System.out.println("Something went awry");
+}
+
+
+        return listOfUsersNames;
     }
+
 }
