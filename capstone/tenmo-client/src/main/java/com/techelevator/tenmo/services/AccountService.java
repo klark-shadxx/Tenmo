@@ -1,10 +1,13 @@
 package com.techelevator.tenmo.services;
 
 import com.techelevator.tenmo.model.Account;
+import com.techelevator.util.BasicLogger;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
@@ -15,6 +18,7 @@ public class AccountService {
     //RestTemplate performs GET, POST, PUT, and DELETE requests.
 
     private String authToken = null; //authToken is where we store the token that was generated from the login endpoint.
+
     //when you log in, you auto-populated authToken
     // the token goes to the header of the request= Authorization Bearer tokenValue
     // you need a header to include the token, and to send a header to the server you need an entity.
@@ -34,8 +38,7 @@ public class AccountService {
     // HttpEntity methods return void because it does not have a body
     //This method makes a call to the server to get a list of flights
     //We want to consume the request for /flights in AppController
-
-    private HttpEntity<Void> makeAuthEntity(){
+    private HttpEntity<Void> makeAuthEntity() {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(this.authToken);
@@ -61,6 +64,27 @@ public class AccountService {
                 BigDecimal.class).getBody(); // what object do I want to deserialize to?
 
         return balance;
+    }
+
+//new!
+    public boolean update(Account updatedBalance) {
+        HttpEntity<Account> entity = makeEntity(updatedBalance);
+        boolean success = false;
+        try {
+            restTemplate.put(API_BASE_URL + updatedBalance.getId(), entity);
+            success = true;
+        } catch (RestClientResponseException e) {
+            BasicLogger.log(e.getRawStatusCode() + " : " + e.getStatusText());
+        } catch (ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return success;
+    }
+
+    private HttpEntity<Account> makeEntity(Account account) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return new HttpEntity<>(account, headers);
     }
 }
 // .exchange= does not return the whole body of info we want, just the
