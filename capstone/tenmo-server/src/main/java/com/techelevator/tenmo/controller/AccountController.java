@@ -28,7 +28,7 @@ public class AccountController {
 
     @RequestMapping(path ="/transfer", method = RequestMethod.POST)
     public Transfer makeTransfer(@RequestBody Transfer transfer){
-        return transferDao.createTransfer(transfer);
+        return transferDao.sendTransfer(transfer);
     }
 
 

@@ -7,6 +7,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -31,20 +32,37 @@ private Transfer transferObjectMapper(SqlRowSet results){
 
     @Override
     public List<Transfer> getAllTransfersById(int transferId) {// return all info from transfer and transfer_type table for all transactions
-        String sql = "SELECT * from flights JOIN ticket_flight ON flights.flight_id = ticket_flight.flight_id where ticket_id = ?";
-
-        return null;
+        String sql = "SELECT*FROM transfer WHERE transfer_id = ? ";
+        SqlRowSet results = this.jdbcTemplate.queryForRowSet(sql, transferId);
+        List<Transfer> transfers = new ArrayList<>();
+        while(results.next()){
+            transfers.add(transferObjectMapper(results));
+        }
+        return transfers;
     }
 
     @Override
     public Transfer getATransferById(int id) {// all info from transfer and transfer_type table for 1 transaction
-        return null;
+        String sql = "SELECT*FROM transfer WHERE transfer_id = ? ";
+        SqlRowSet results = this.jdbcTemplate.queryForRowSet(sql, id);
+
+        Transfer transfer = null;
+        if(results.next())
+        {
+            transfer=transferObjectMapper(results);
+        }
+
+        return transfer;
 
     }
 
     @Override
     public Transfer updateTransfer(Transfer transfer) {
-        String sql=
+        String sql= "UPDATE account SET balance = balance - ? WHERE user_id = ?";
+
+        String sql2 ="UPDATE account SET balance = balance + ? WHERE user_id= ?";
+
+        String sql3 = ""
 
         return null;
 
