@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.util.List;
 
-@Component //
+@Component // creates an accountDao object of the jdbcTemplate and jdbcAccount to be used in the controller
 public class JdbcAccountDao implements AccountDao{
     private JdbcTemplate jdbcTemplate;
 

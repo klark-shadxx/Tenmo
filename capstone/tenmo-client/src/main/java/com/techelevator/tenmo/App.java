@@ -24,7 +24,7 @@ public class App {
     private final UserService userService = new UserService();
     private AuthenticatedUser currentUser;
 
-    Scanner scanner = new Scanner();
+    //Scanner scanner = new Scanner();
     public static void main(String[] args) {
         App app = new App();
         app.run();

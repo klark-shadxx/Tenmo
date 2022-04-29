@@ -2,7 +2,7 @@ package com.techelevator.tenmo.model;
 
 import java.math.BigDecimal;
 
-public class Transfers {
+public class Transfer {
     private int transferId;
     private int transferTypeId;
     private int transferStatusId;
@@ -60,7 +60,7 @@ public class Transfers {
 
     @Override
     public String toString() {
-        return "Transfers{" +
+        return "Transfer{" +
                 "transferId=" + transferId +
                 ", transferTypeId=" + transferTypeId +
                 ", transferStatusId=" + transferStatusId +

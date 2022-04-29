@@ -21,6 +21,13 @@ public class User {
         this.username = username;
     }
 
+    @Override // this was added, not in original code
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                '}';
+    }
+
     @Override
     public boolean equals(Object other) {
         if (other instanceof User) {
@@ -30,5 +37,6 @@ public class User {
         } else {
             return false;
         }
+
     }
 }
