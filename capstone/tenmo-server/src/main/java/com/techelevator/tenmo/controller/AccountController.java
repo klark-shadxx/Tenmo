@@ -29,7 +29,7 @@ public class AccountController {
 
     @RequestMapping(path ="/transfer", method = RequestMethod.POST)
     public Transfer makeTransfer(@RequestBody Transfer transfer){
-        return transferDao.sendTransfer(transfer);
+        return transferDao.updateTransfer(transfer);
     }
 
 
@@ -37,7 +37,6 @@ public class AccountController {
     public List <User> getUsers() {
         return userDao.findAll();
     }
-
 
     @RequestMapping(path="/account", method = RequestMethod.GET)
     public BigDecimal getAccount(Principal principal) {

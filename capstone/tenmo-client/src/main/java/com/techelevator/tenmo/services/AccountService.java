@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.services;
 
 import com.techelevator.tenmo.model.Account;
+import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.util.BasicLogger;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -30,7 +31,15 @@ public class AccountService {
     /**
      * Creates a new HttpEntity with the `Authorization: Bearer:` header and a reservation request body
      */
+    private HttpEntity<Transfer>makeTransferEntity(Transfer transfer){
 
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(this.authToken);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Transfer> entity = new HttpEntity<>(transfer, headers);
+        return entity;
+
+    }
 
     /**
      * Returns an HttpEntity with the `Authorization: Bearer:` header

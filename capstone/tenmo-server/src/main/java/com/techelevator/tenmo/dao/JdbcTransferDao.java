@@ -2,17 +2,19 @@ package com.techelevator.tenmo.dao;
 
 
 import com.techelevator.tenmo.model.Transfer;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class JdbcTransferDao implements TransferDao{
-
+    //private static final BigDecimal STARTING_BALANCE = new BigDecimal("1000.00");
     private JdbcTemplate jdbcTemplate;
     public JdbcTransferDao(DataSource ds) {this.jdbcTemplate =new JdbcTemplate(ds);}
 
@@ -58,13 +60,15 @@ private Transfer transferObjectMapper(SqlRowSet results){
 
     @Override
     public Transfer updateTransfer(Transfer transfer) {
-        String sql= "UPDATE account SET balance = balance - ? WHERE user_id = ?";
-
-        String sql2 ="UPDATE account SET balance = balance + ? WHERE user_id= ?";
-
-        String sql3 = ""
-
-        return null;
-
+        String sql = "UPDATE account SET balance = balance - ? WHERE user_id = ?";
+        jdbcTemplate.update(sql, BigDecimal.class, transfer);
+        String sql2 = "UPDATE account SET balance = balance + ? WHERE user_id= ?";
+        jdbcTemplate.update(sql, BigDecimal.class, transfer);
+        String sql3 = "INSERT INTO transfer (transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
+                "VALUES (?,?,?,?,?,?)";
+           jdbcTemplate.update(sql3, Integer.class,transfer.getTransferId(), transfer.getTransferTypeId(), transfer.getTransferStatusId(),
+                    transfer.getAccountFrom(), transfer.getAccountTo());
+            return transfer;
     }
 }
+    // do I have to do a return and make a  int newTransferId =  for a new transferid
