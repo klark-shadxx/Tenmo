@@ -1,9 +1,6 @@
 package com.techelevator.tenmo;
 
-import com.techelevator.tenmo.model.Account;
-import com.techelevator.tenmo.model.AuthenticatedUser;
-import com.techelevator.tenmo.model.User;
-import com.techelevator.tenmo.model.UserCredentials;
+import com.techelevator.tenmo.model.*;
 import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
@@ -78,7 +75,7 @@ public class App {
 
     private void mainMenu() {
         int menuSelection = -1;
-        String menuSelection2 = "";
+        String menuSelection2 = " ";
         while (menuSelection != 0) {
             consoleService.printMainMenu();
             menuSelection = consoleService.promptForMenuSelection("Please choose an option: ");
@@ -92,6 +89,7 @@ public class App {
 //                System.out.println(userService.getAllUser());
                 sendBucks();
                 menuSelection2 = consoleService.promptForString("Who do you want to send money to?: ");
+
                 // prompt user to enter a name, then make separate if statement and return error if your name is entered
 //                lowerCaseinput = toLowerCase(menuSelection2)
 
@@ -133,9 +131,32 @@ public class App {
             //after prompted for user
             //scan the list of users (where that is? no clue)
         }
+       // Scanner scanner =new Scanner(System.in);
+        String recipientIdStr = consoleService.promptForString("Who do you want to send money to?: ");
+        int recipientId = Integer.parseInt(recipientIdStr);
         BigDecimal moneyInput = consoleService.promptForBigDecimal("How much would you like to send?: ");
-       BigDecimal balance = accountService.getBalance().subtract(moneyInput);
-        System.out.println(balance);
+
+        Transfer transfer = new Transfer();
+
+        long temp = currentUser.getUser().getId();
+        int accountFrom = (int) temp;
+
+        transfer.setAccountFrom(accountFrom);
+        transfer.setAccountTo(recipientId);
+        transfer.setAmount(moneyInput);
+        transfer.setTransferTypeId(2);
+        transfer.setTransferStatusId(2);
+        accountService.makeTransfer(transfer);
+
+        //String amountToSend = scanner.nextLine();
+
+
+
+
+        //BigDecimal balance = accountService.getBalance().subtract(moneyInput);
+        //System.out.println(balance);
+
+
         //if the user entered doesnt exists  enter an error, and make them enter another user
         //if user does exist, prompt for the amount of money
 

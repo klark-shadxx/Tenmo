@@ -15,6 +15,13 @@ public class JdbcAccountDao implements AccountDao{
     public JdbcAccountDao(JdbcTemplate jdbcTemplate){this.jdbcTemplate =jdbcTemplate;}
 
     @Override
+    public int getAccountByUserId(int id){
+        String sql = "SELECT account_id FROM account WHERE user_id = ?";
+        return this.jdbcTemplate.queryForObject(sql,Integer.class, id);
+
+    }
+
+    @Override
     //1.
     // need to use Principal to access user_id without displaying the id
     public BigDecimal getBalance(String username) {

@@ -29,9 +29,9 @@ public class AccountController {
 
     @RequestMapping(path ="/transfer", method = RequestMethod.POST)
     public Transfer makeTransfer(@RequestBody Transfer transfer){
-        return transferDao.updateTransfer(transfer);
+        //System.out.println("DEBUG, what the object looks like:");
+        return transferDao.updateTransfer(transfer); // not happy
     }
-
 
     @RequestMapping(path="/user", method = RequestMethod.GET)
     public List <User> getUsers() {

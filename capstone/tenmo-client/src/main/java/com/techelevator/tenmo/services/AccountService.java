@@ -31,7 +31,7 @@ public class AccountService {
     /**
      * Creates a new HttpEntity with the `Authorization: Bearer:` header and a reservation request body
      */
-    private HttpEntity<Transfer>makeTransferEntity(Transfer transfer){
+    private HttpEntity<Transfer> makeTransferEntity(Transfer transfer) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(this.authToken);
@@ -75,26 +75,38 @@ public class AccountService {
         return balance;
     }
 
-//new!
-    public boolean update(Account updatedBalance) {
-        HttpEntity<Account> entity = makeEntity(updatedBalance);
-        boolean success = false;
-        try {
-            restTemplate.put(API_BASE_URL + updatedBalance.getId(), entity);
-            success = true;
-        } catch (RestClientResponseException e) {
-            BasicLogger.log(e.getRawStatusCode() + " : " + e.getStatusText());
-        } catch (ResourceAccessException e) {
-            BasicLogger.log(e.getMessage());
-        }
-        return success;
+    public void makeTransfer(Transfer transfer) {
+    try { restTemplate.exchange(API_BASE_URL + "transfer",
+            HttpMethod.POST,
+            makeTransferEntity(transfer),
+            Void.class);
+        System.out.println("Transfer Complete!");
+    }catch (RestClientResponseException | ResourceAccessException e){
+        System.out.println("Something bad!");
+    }
+          //    return transfer;
     }
 
-    private HttpEntity<Account> makeEntity(Account account) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        return new HttpEntity<>(account, headers);
-    }
+////new!
+//    public boolean update(Account updatedBalance) {
+//        HttpEntity<Account> entity = makeEntity(updatedBalance);
+//        boolean success = false;
+//        try {
+//            restTemplate.put(API_BASE_URL + updatedBalance.getId(), entity);
+//            success = true;
+//        } catch (RestClientResponseException e) {
+//            BasicLogger.log(e.getRawStatusCode() + " : " + e.getStatusText());
+//        } catch (ResourceAccessException e) {
+//            BasicLogger.log(e.getMessage());
+//        }
+//        return success;
+//    }
+//
+//    private HttpEntity<Account> makeEntity(Account account) {
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//        return new HttpEntity<>(account, headers);
+//    }
 }
 // .exchange= does not return the whole body of info we want, just the
 //response entity, so we add .getBody to add all the info

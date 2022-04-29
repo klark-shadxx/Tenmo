@@ -2,6 +2,7 @@ package com.techelevator.tenmo.dao;
 
 
 import com.techelevator.tenmo.model.Transfer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -17,6 +18,8 @@ public class JdbcTransferDao implements TransferDao{
     //private static final BigDecimal STARTING_BALANCE = new BigDecimal("1000.00");
     private JdbcTemplate jdbcTemplate;
     public JdbcTransferDao(DataSource ds) {this.jdbcTemplate =new JdbcTemplate(ds);}
+@Autowired
+AccountDao accountDao;
 
 private Transfer transferObjectMapper(SqlRowSet results){
 
@@ -60,14 +63,19 @@ private Transfer transferObjectMapper(SqlRowSet results){
 
     @Override
     public Transfer updateTransfer(Transfer transfer) {
+
+        // Take transfer.getAccountFrom() and transform this into an account number
+         int FROM = accountDao.getAccountByUserId(transfer.getAccountFrom());
+        // Take transfer.getAccountTo() and transform this into an account number
+        int TO = accountDao.getAccountByUserId(transfer.getAccountTo());
         String sql = "UPDATE account SET balance = balance - ? WHERE user_id = ?";
-        jdbcTemplate.update(sql, BigDecimal.class, transfer);
+        jdbcTemplate.update(sql, transfer.getAmount(), transfer.getAccountFrom());
         String sql2 = "UPDATE account SET balance = balance + ? WHERE user_id= ?";
-        jdbcTemplate.update(sql, BigDecimal.class, transfer);
-        String sql3 = "INSERT INTO transfer (transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
-                "VALUES (?,?,?,?,?,?)";
-           jdbcTemplate.update(sql3, Integer.class,transfer.getTransferId(), transfer.getTransferTypeId(), transfer.getTransferStatusId(),
-                    transfer.getAccountFrom(), transfer.getAccountTo());
+        jdbcTemplate.update(sql2,transfer.getAmount(), transfer.getAccountTo()); //not happy
+        String sql3 = "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
+                "VALUES (?,?,?,?,?)";
+           jdbcTemplate.update(sql3, transfer.getTransferTypeId(), transfer.getTransferStatusId(),
+                    FROM, TO, transfer.getAmount());
             return transfer;
     }
 }
