@@ -9,6 +9,8 @@ public class Transfer {
     private int accountFrom;
     private int accountTo;
     private BigDecimal amount;
+    private String transferTypeDescription;
+    private String transferStatusDescription;
 
     public int getTransferId() {
         return transferId;
@@ -58,6 +60,22 @@ public class Transfer {
         this.amount = amount;
     }
 
+    public String getTransferTypeDescription() {
+        return transferTypeDescription;
+    }
+
+    public void setTransferTypeDescription(String transferTypeDescription) {
+        this.transferTypeDescription = transferTypeDescription;
+    }
+
+    public String getTransferStatusDescription() {
+        return transferStatusDescription;
+    }
+
+    public void setTransferStatusDescription(String transferStatusDescription) {
+        this.transferStatusDescription = transferStatusDescription;
+    }
+
     @Override
     public String toString() {
         return "Transfer{" +
@@ -67,6 +85,8 @@ public class Transfer {
                 ", accountFrom=" + accountFrom +
                 ", accountTo=" + accountTo +
                 ", amount=" + amount +
+                ", transferTypeDescription='" + transferTypeDescription + '\'' +
+                ", transferStatusDescription='" + transferStatusDescription + '\'' +
                 '}';
     }
 }

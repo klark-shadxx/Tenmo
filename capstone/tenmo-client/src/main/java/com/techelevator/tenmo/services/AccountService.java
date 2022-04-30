@@ -2,6 +2,7 @@ package com.techelevator.tenmo.services;
 
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.User;
 import com.techelevator.util.BasicLogger;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -87,6 +88,47 @@ public class AccountService {
           //    return transfer;
     }
 
+        public Transfer[] getAllTransfers() {
+
+            Transfer [] listOfTransfers = null;
+            try {
+
+                listOfTransfers = restTemplate.exchange(// performs the request
+                        API_BASE_URL + "transfer_history", //need url
+                        HttpMethod.GET, // request type is a GET; Http is an enum method
+                        makeAuthEntity(),// header that contains token to access server
+                        Transfer [].class).getBody(); // what object do I want to deserialize to?
+
+
+            } catch (RestClientResponseException | ResourceAccessException e) {
+                System.out.println("Something went awry");
+            }
+
+
+            return listOfTransfers;
+        }
+
+
+        public Transfer[] getAllTransfersByUserId(Long id) {
+        Transfer[] listOfTransfers = null;
+
+        try {
+            listOfTransfers = restTemplate.exchange(// performs the request
+                    API_BASE_URL + "/transfer/" + id , //need url
+                    HttpMethod.GET, // request type is a GET; Http is an enum method
+                    makeAuthEntity(),// header that contains token to access server
+                    Transfer[].class).getBody(); // what object do I want to deserialize to?
+            System.out.println("Yay this worked!");
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            System.out.println("Bad things result from this!");
+        }
+        return listOfTransfers;
+    }
+}
+
+
+
+
 ////new!
 //    public boolean update(Account updatedBalance) {
 //        HttpEntity<Account> entity = makeEntity(updatedBalance);
@@ -107,7 +149,7 @@ public class AccountService {
 //        headers.setContentType(MediaType.APPLICATION_JSON);
 //        return new HttpEntity<>(account, headers);
 //    }
-}
+
 // .exchange= does not return the whole body of info we want, just the
 //response entity, so we add .getBody to add all the info
 

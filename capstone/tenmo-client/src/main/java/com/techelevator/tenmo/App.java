@@ -22,7 +22,7 @@ public class App {
     private final UserService userService = new UserService();
     private AuthenticatedUser currentUser;
 
-//   2
+    //   2
     public static void main(String[] args) {
         App app = new App();
         app.run();
@@ -35,6 +35,7 @@ public class App {
             mainMenu();
         }
     }
+
     private void loginMenu() {
         int menuSelection = -1;
         while (menuSelection != 0 && currentUser == null) {
@@ -69,6 +70,7 @@ public class App {
         accountService.setAuthToken(currentUser.getToken());
         userService.setAuthToken(currentUser.getToken());
         if (currentUser == null) {
+            //need to figure out how to handle if the password is incorrect
             consoleService.printErrorMessage();
         }
     }
@@ -86,15 +88,11 @@ public class App {
             } else if (menuSelection == 3) {
                 viewPendingRequests();
             } else if (menuSelection == 4) {
-//                System.out.println(userService.getAllUser());
+                printAllUsers();
                 sendBucks();
-                menuSelection2 = consoleService.promptForString("Who do you want to send money to?: ");
-
-                // prompt user to enter a name, then make separate if statement and return error if your name is entered
-//                lowerCaseinput = toLowerCase(menuSelection2)
 
             } else if (menuSelection == 5) {
-                menuSelection2 = consoleService.promptForString("Who do you want to get money from (enter User ID?: ");
+                printAllUsers();
                 requestBucks();
             } else if (menuSelection == 0) {
                 continue;
@@ -105,76 +103,128 @@ public class App {
         }
     }
 
-	private void viewCurrentBalance () {
+    private void viewCurrentBalance() {
         BigDecimal balance = accountService.getBalance();
         System.out.println(balance);
 
-	}
+    }
 
-	private void viewTransferHistory() {
+    private void viewTransferHistory() {
+        printAllTranfers();
+    }
 
-
-		// TODO Auto-generated method stub
-
-	}
-
-	private void viewPendingRequests() {
-		// TODO Auto-generated method stub
-
-	}
-
-	private void sendBucks() {
-//        userService.getAllUser();
-        User [] users = userService.getAllUser();
-        for(User user: users) {
-            System.out.println(user.getId() + " " + user.getUsername());
-            //after prompted for user
-            //scan the list of users (where that is? no clue)
-        }
-       // Scanner scanner =new Scanner(System.in);
-        String recipientIdStr = consoleService.promptForString("Who do you want to send money to?: ");
-        int recipientId = Integer.parseInt(recipientIdStr);
-        BigDecimal moneyInput = consoleService.promptForBigDecimal("How much would you like to send?: ");
-
-        Transfer transfer = new Transfer();
-
-        long temp = currentUser.getUser().getId();
-        int accountFrom = (int) temp;
-
-        transfer.setAccountFrom(accountFrom);
-        transfer.setAccountTo(recipientId);
-        transfer.setAmount(moneyInput);
-        transfer.setTransferTypeId(2);
-        transfer.setTransferStatusId(2);
-        accountService.makeTransfer(transfer);
-
-        //String amountToSend = scanner.nextLine();
-
-
-
-
-        //BigDecimal balance = accountService.getBalance().subtract(moneyInput);
-        //System.out.println(balance);
-
-
-        //if the user entered doesnt exists  enter an error, and make them enter another user
-        //if user does exist, prompt for the amount of money
-
-        //
-
-        //once you enter the amount of money,
-        //if you dont have enough money, give an error
-        //if you do have enough money, deduct that from your initial balance
-//        User username = userService.getUser();
-//        System.out.println(username);
-
-		// TODO Auto-generated method stub
+    private void viewPendingRequests() {
+        // TODO Auto-generated method stub
 
     }
 
-	private void requestBucks() {
-		// TODO Auto-generated method stub
-		
-	}
+    private void sendBucks() {
+        String recipientIdStr = consoleService.promptForString("Who do you want to send money to (Please enter user id) ?: ");
+        long temp = currentUser.getUser().getId();
+        int recipientId = Integer.parseInt(recipientIdStr);
+        if (recipientIdStr.equals(String.valueOf(temp))) {
+            consoleService.printCannotSendMoneyToSelf();
+        } else {
+            if (!userService.doesUserExist(recipientId)) {
+                consoleService.printUserDoesNotExistError();
+            } else {
 
+                BigDecimal moneyInput = consoleService.promptForBigDecimal("How much would you like to send?: ");
+                if (moneyInput.compareTo(accountService.getBalance()) > 0 || moneyInput.compareTo(new BigDecimal("0.00")) <= 0) {
+                    consoleService.printYouDoNotHaveEnoughMoney();
+                } else {
+                    Transfer transfer = new Transfer();
+
+                    int accountFrom = (int) temp;
+
+                    transfer.setAccountFrom(accountFrom);
+                    transfer.setAccountTo(recipientId);
+                    transfer.setAmount(moneyInput);
+                    transfer.setTransferTypeId(2);
+                    transfer.setTransferStatusId(2);
+                    accountService.makeTransfer(transfer);
+
+
+                }
+
+
+            }
+
+
+            //String amountToSend = scanner.nextLine();
+
+
+            //BigDecimal balance = accountService.getBalance().subtract(moneyInput);
+            //System.out.println(balance);
+
+
+            //if the user entered doesnt exists  enter an error, and make them enter another user
+            //if user does exist, prompt for the amount of money
+
+            //
+
+            //once you enter the amount of money,
+            //if you dont have enough money, give an error
+            //if you do have enough money, deduct that from your initial balance
+//        User username = userService.getUser();
+//        System.out.println(username);
+
+            // TODO Auto-generated method stub
+
+        }
+    }
+
+    private void requestBucks() {
+//        String recipientIdStr = consoleService.promptForString("Who do you want to request money from  (Please enter user id) ?: ");
+//        long temp = currentUser.getUser().getId();
+//        int recipientId = Integer.parseInt(recipientIdStr);
+//        if (recipientIdStr == String.valueOf(temp)) {
+//            consoleService.print();
+//        } else {
+//            if (!userService.doesUserExist(recipientId)) {
+//                consoleService.printUserDoesNotExistError();
+//            } else {
+//
+//                BigDecimal moneyInput = consoleService.promptForBigDecimal("How much would you like to send?: ");
+//                if (moneyInput.compareTo(accountService.getBalance()) > 0 || moneyInput.compareTo(new BigDecimal("0.00")) <= 0) {
+//                    consoleService.printCannotSendMoneyToSelf();
+//                } else {
+//                    Transfer transfer = new Transfer();
+//
+//                    int accountFrom = (int) temp;
+//
+//                    transfer.setAccountFrom(accountFrom);
+//                    transfer.setAccountTo(recipientId);
+//                    transfer.setAmount(moneyInput);
+//                    transfer.setTransferTypeId(2);
+//                    transfer.setTransferStatusId(2);
+//                    accountService.makeTransfer(transfer);
+//
+//
+//                }
+//
+//
+//            }
+//
+//        }
+    }
+
+    private void printAllUsers() {
+        User[] users = userService.getAllUser();
+        for (User user : users) {
+            System.out.println(user.getId() + " " + user.getUsername());
+        }
+    }
+
+    private void printAllTranfers() {
+
+        Transfer[] transfers = accountService.getAllTransfersByUserId(currentUser.getUser().getId());
+        for (Transfer transfer : transfers) {
+            System.out.println(transfer);
+        }
+    }
 }
+
+
+
+

@@ -2,6 +2,7 @@ package com.techelevator.tenmo.dao;
 
 
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -30,6 +31,8 @@ private Transfer transferObjectMapper(SqlRowSet results){
     transfer.setAccountFrom(results.getInt("account_from"));//this is account ID
     transfer.setAccountTo(results.getInt("account_to"));//this is account ID
     transfer.setAmount(results.getBigDecimal("amount"));
+    transfer.setTransferTypeDescription(results.getString("transfer_type_desc"));
+    transfer.setTransferStatusDescription(results.getString("transfer_status_desc"));
 
     return transfer;
 }
@@ -78,5 +81,34 @@ private Transfer transferObjectMapper(SqlRowSet results){
                     FROM, TO, transfer.getAmount());
             return transfer;
     }
+
+    @Override
+    public List<Transfer> getAllTransfersByUserId(long userId) {// return all info from transfer and transfer_type table for all transactions
+        String sql = "SELECT transfer_id, transfer_type_desc, account_from, account_to, amount, balance " +
+                "FROM transfer " +
+                "Join account ON transfer.account_from = account.account_id " +
+                "Join transfer_type On transfer_type.transfer_type_id = transfer.transfer_type_id " +
+                "WHERE user_id = ?";
+        SqlRowSet results = this.jdbcTemplate.queryForRowSet(sql, userId);
+        List<Transfer> transfers = new ArrayList<>();
+        while(results.next()){
+            transfers.add(transferObjectMapper(results));
+        }
+        return transfers;
+    }
+
+    @Override
+    public List<Transfer> findAll() {
+        List<Transfer> transfers = new ArrayList<>();
+        String sql = "SELECT transfer_id, account_from, account_to, amount " +
+                "FROM transfer;";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
+        while(results.next()) {
+            Transfer transfer = transferObjectMapper(results);
+            transfers.add(transfer);
+        }
+        return transfers;
+    }
+
 }
     // do I have to do a return and make a  int newTransferId =  for a new transferid

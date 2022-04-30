@@ -19,6 +19,7 @@ public class UserService {
     //RestTemplate performs GET, POST, PUT, and DELETE requests.
 
     private String authToken = null; //authToken is where we store the token that was generated from the login endpoint.
+
     //when you log in, you auto-populated authToken
     // the token goes to the header of the request= Authorization Bearer tokenValue
     // you need a header to include the token, and to send a header to the server you need an entity.
@@ -35,7 +36,7 @@ public class UserService {
     /**
      * Returns an HttpEntity with the `Authorization: Bearer:` header
      */
-    private HttpEntity<Void> makeAuthEntity(){
+    private HttpEntity<Void> makeAuthEntity() {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(this.authToken);
@@ -49,22 +50,36 @@ public class UserService {
 
     public User[] getAllUser() {
 
-        User [] listOfUsersNames = null;
-    try {
+        User[] listOfUsersNames = null;
+        try {
 
-    listOfUsersNames = restTemplate.exchange(// performs the request
-            API_BASE_URL + "user", //need url
-            HttpMethod.GET, // request type is a GET; Http is an enum method
-            makeAuthEntity(),// header that contains token to access server
-            User[].class).getBody(); // what object do I want to deserialize to?
+            listOfUsersNames = restTemplate.exchange(// performs the request
+                    API_BASE_URL + "user", //need url
+                    HttpMethod.GET, // request type is a GET; Http is an enum method
+                    makeAuthEntity(),// header that contains token to access server
+                    User[].class).getBody(); // what object do I want to deserialize to?
 
 
-} catch (RestClientResponseException | ResourceAccessException e){
-    System.out.println("Something went awry");
-}
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            System.out.println("Something went awry");
+        }
 
 
         return listOfUsersNames;
+    }
+
+    public boolean doesUserExist(int id) {
+        User[] listOfUsersNames = getAllUser();
+        for (User user : listOfUsersNames) {
+            if (user.getId() == id) {
+                return true;
+
+            }
+
+        }
+
+        return false;
+
     }
 
 }

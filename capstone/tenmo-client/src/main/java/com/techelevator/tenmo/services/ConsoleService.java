@@ -114,4 +114,16 @@ public class ConsoleService {
         System.out.println("An error occurred. Check the log for details.");
     }
 
+    public void printCannotSendMoneyToSelf() {
+        System.out.println("You cannot send money to yourself! ");
+    }
+
+    public void printYouDoNotHaveEnoughMoney() {
+        System.out.println("You do not have enough money! ");
+    }
+
+    public void printUserDoesNotExistError() {
+        System.out.println("User does not exist!!!  ");
+    }
+
 }

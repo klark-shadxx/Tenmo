@@ -30,15 +30,26 @@ public class AccountController {
     @RequestMapping(path ="/transfer", method = RequestMethod.POST)
     public Transfer makeTransfer(@RequestBody Transfer transfer){
         //System.out.println("DEBUG, what the object looks like:");
-        return transferDao.updateTransfer(transfer); // not happy
+        return transferDao.updateTransfer(transfer);
     }
 
     @RequestMapping(path="/user", method = RequestMethod.GET)
     public List <User> getUsers() {
         return userDao.findAll();
     }
+///HELP
+//    @RequestMapping(path="/transfer_history", method = RequestMethod.GET)
+//    public List <Transfer> getTransferHistory() {
+//        return transferDao.findAll();
+//    }
 
-    @RequestMapping(path="/account", method = RequestMethod.GET)
+    @RequestMapping(path="/transfer/id", method = RequestMethod.GET)
+    public List <Transfer> listTransfers(@PathVariable long id) {
+        // System.out.println("DEBUG, what the object looks like: ");
+        return transferDao.getAllTransfersByUserId(id);
+    }
+
+        @RequestMapping(path="/account", method = RequestMethod.GET)
     public BigDecimal getAccount(Principal principal) {
         return accountDao.getBalance(principal.getName());
     }
