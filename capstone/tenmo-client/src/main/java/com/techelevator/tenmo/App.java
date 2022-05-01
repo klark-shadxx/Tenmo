@@ -105,12 +105,13 @@ public class App {
 
     private void viewCurrentBalance() {
         BigDecimal balance = accountService.getBalance();
-        System.out.println(balance);
+        System.out.println("Your current balance is: $" + balance);
 
     }
 
     private void viewTransferHistory() {
         printAllTranfers();
+        String recipientIdStr = consoleService.promptForString("Do you w: ");
     }
 
     private void viewPendingRequests() {
@@ -212,7 +213,9 @@ public class App {
     private void printAllUsers() {
         User[] users = userService.getAllUser();
         for (User user : users) {
-            System.out.println(user.getId() + " " + user.getUsername());
+            System.out.println("___________________" + "\nUserID        Name");
+            System.out.println(user.getId() + "          " + user.getUsername());
+
         }
     }
 
