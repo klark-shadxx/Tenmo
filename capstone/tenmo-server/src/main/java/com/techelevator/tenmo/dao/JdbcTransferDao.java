@@ -22,42 +22,60 @@ public class JdbcTransferDao implements TransferDao{
 @Autowired
 AccountDao accountDao;
 
-private Transfer transferObjectMapper(SqlRowSet results){
+    private Transfer transferTypeObjectMapper(SqlRowSet results){
 
-    Transfer transfer = new Transfer();
-    transfer.setTransferId(results.getInt("transfer_id"));
-    transfer.setTransferTypeId(results.getInt("transfer_type_id"));
-    transfer.setTransferStatusId(results.getInt("transfer_status_id"));
-    transfer.setAccountFrom(results.getInt("account_from"));//this is account ID
-    transfer.setAccountTo(results.getInt("account_to"));//this is account ID
-    transfer.setAmount(results.getBigDecimal("amount"));
-    transfer.setTransferTypeDescription(results.getString("transfer_type_desc"));
-    transfer.setTransferStatusDescription(results.getString("transfer_status_desc"));
+        Transfer transfer = new Transfer();
+        transfer.setTransferId(results.getInt("transfer_id"));
+        transfer.setTransferTypeDescription(results.getString("transfer_type_desc"));
+        transfer.setTransferStatusDescription(results.getString("transfer_status_desc"));
+        transfer.setAccountFrom(results.getInt("account_from"));//this is account ID
+        transfer.setAccountTo(results.getInt("account_to"));//this is account ID
+        transfer.setAmount(results.getBigDecimal("amount"));
+        return transfer;
+    }
+    private Transfer transferObjectMapper(SqlRowSet results){
 
-    return transfer;
-}
+        Transfer transfer = new Transfer();
+        transfer.setTransferId(results.getInt("transfer_id"));
+        transfer.setAccountFrom(results.getInt("account_from"));//this is account ID
+        transfer.setAccountTo(results.getInt("account_to"));//this is account ID
+        transfer.setAmount(results.getBigDecimal("amount"));
+        transfer.setTransferTypeId(results.getInt("transfer_type_id"));
+        transfer.setTransferStatusId(results.getInt("transfer_status_id"));
+
+        return transfer;
+    }
+
 
 
     @Override
     public List<Transfer> getAllTransfersById(int transferId) {// return all info from transfer and transfer_type table for all transactions
-        String sql = "SELECT*FROM transfer WHERE transfer_id = ? ";
+        String sql = "SELECT transfer_id, transfer_type_desc, transfer_status_desc, account_from, account_to, amount " +
+                "FROM transfer " +
+                "JOIN transfer_type On transfer_type.transfer_type_id = transfer.transfer_type_id " +
+                "JOIN transfer_status ON transfer.transfer_status_id = transfer_status.transfer_status_id " +
+                "WHERE transfer_id = ?;";
         SqlRowSet results = this.jdbcTemplate.queryForRowSet(sql, transferId);
         List<Transfer> transfers = new ArrayList<>();
         while(results.next()){
-            transfers.add(transferObjectMapper(results));
+            transfers.add(transferTypeObjectMapper(results));
         }
         return transfers;
     }
 
     @Override
-    public Transfer getATransferById(int id) {// all info from transfer and transfer_type table for 1 transaction
-        String sql = "SELECT*FROM transfer WHERE transfer_id = ? ";
-        SqlRowSet results = this.jdbcTemplate.queryForRowSet(sql, id);
+    public Transfer getATransferById(int transferId) {// all info from transfer and transfer_type table for 1 transaction
+        String sql = "SELECT transfer_id, transfer_type_desc, transfer_status_desc, account_from, account_to, amount " +
+                "FROM transfer " +
+                "JOIN transfer_type On transfer_type.transfer_type_id = transfer.transfer_type_id " +
+                "JOIN transfer_status ON transfer.transfer_status_id = transfer_status.transfer_status_id " +
+                "WHERE transfer_id = ?;";
+        SqlRowSet results = this.jdbcTemplate.queryForRowSet(sql, transferId);
 
         Transfer transfer = null;
         if(results.next())
         {
-            transfer=transferObjectMapper(results);
+            transfer=transferTypeObjectMapper(results);
         }
 
         return transfer;
@@ -83,16 +101,18 @@ private Transfer transferObjectMapper(SqlRowSet results){
     }
 
     @Override
-    public List<Transfer> getAllTransfersByUserId(long userId) {// return all info from transfer and transfer_type table for all transactions
-        String sql = "SELECT transfer_id, transfer_type_desc, account_from, account_to, amount, balance " +
-                "FROM transfer " +
-                "Join account ON transfer.account_from = account.account_id " +
-                "Join transfer_type On transfer_type.transfer_type_id = transfer.transfer_type_id " +
-                "WHERE user_id = ?";
-        SqlRowSet results = this.jdbcTemplate.queryForRowSet(sql, userId);
+    public List<Transfer> getAllTransfersByUserId(int userId) {// return all info from transfer and transfer_type table for all transactions
+        String sql = "SELECT transfer_id, transfer_type.transfer_type_id, transfer_type_desc, transfer.transfer_status_id, transfer_status_desc, account_from, account_to, amount, balance" +
+                " FROM transfer " +
+                "JOIN account ON transfer.account_from = account.account_id " +
+                "JOIN transfer_type On transfer_type.transfer_type_id = transfer.transfer_type_id " +
+                "JOIN transfer_status ON transfer.transfer_status_id = transfer_status.transfer_status_id " +
+                "WHERE user_id = ? ";
+
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
         List<Transfer> transfers = new ArrayList<>();
         while(results.next()){
-            transfers.add(transferObjectMapper(results));
+            transfers.add(transferTypeObjectMapper(results));
         }
         return transfers;
     }

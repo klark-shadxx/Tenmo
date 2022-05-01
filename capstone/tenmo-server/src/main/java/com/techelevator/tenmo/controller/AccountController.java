@@ -37,17 +37,20 @@ public class AccountController {
     public List <User> getUsers() {
         return userDao.findAll();
     }
-///HELP
-//    @RequestMapping(path="/transfer_history", method = RequestMethod.GET)
-//    public List <Transfer> getTransferHistory() {
-//        return transferDao.findAll();
-//    }
 
-    @RequestMapping(path="/transfer/id", method = RequestMethod.GET)
-    public List <Transfer> listTransfers(@PathVariable long id) {
+
+    @RequestMapping(path="/transfer/{id}", method = RequestMethod.GET)
+    public List <Transfer> listTransfers(@PathVariable int id) {
         // System.out.println("DEBUG, what the object looks like: ");
         return transferDao.getAllTransfersByUserId(id);
     }
+
+    @RequestMapping(path="/transfer_status/{transferId}", method = RequestMethod.GET)
+    public List <Transfer> listTransfersByTransferId(@PathVariable int transferId) {
+        // System.out.println("DEBUG, what the object looks like: ");
+        return transferDao.getAllTransfersById(transferId);
+    }
+
 
         @RequestMapping(path="/account", method = RequestMethod.GET)
     public BigDecimal getAccount(Principal principal) {

@@ -11,9 +11,9 @@ import java.util.List;
 
         List<Transfer> getAllTransfersById(int transferId);
 
-        Transfer getATransferById(int id);
+        Transfer getATransferById(int transferId);
 
-        List<Transfer>getAllTransfersByUserId(long userId);
+        List<Transfer>getAllTransfersByUserId(int userId);
 
         Transfer updateTransfer(Transfer transfer);}
 

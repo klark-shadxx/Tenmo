@@ -114,7 +114,23 @@ public class AccountService {
 
         try {
             listOfTransfers = restTemplate.exchange(// performs the request
-                    API_BASE_URL + "/transfer/" + id , //need url
+                    API_BASE_URL + "/transfer/" + id, //need url
+                    HttpMethod.GET, // request type is a GET; Http is an enum method
+                    makeAuthEntity(),// header that contains token to access server
+                    Transfer[].class).getBody(); // what object do I want to deserialize to?
+            System.out.println("Yay this worked!");
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            System.out.println("Bad things result from this!");
+        }
+        return listOfTransfers;
+    }
+
+    public Transfer [] getAllTransfersById(int transferId) {
+        Transfer[] listOfTransfers = null;
+
+        try {
+            listOfTransfers = restTemplate.exchange(// performs the request
+                    API_BASE_URL + "/transfer_status/" + transferId, //need url
                     HttpMethod.GET, // request type is a GET; Http is an enum method
                     makeAuthEntity(),// header that contains token to access server
                     Transfer[].class).getBody(); // what object do I want to deserialize to?

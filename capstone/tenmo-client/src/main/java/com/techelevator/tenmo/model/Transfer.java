@@ -80,8 +80,6 @@ public class Transfer {
     public String toString() {
         return "Transfer{" +
                 "transferId=" + transferId +
-                ", transferTypeId=" + transferTypeId +
-                ", transferStatusId=" + transferStatusId +
                 ", accountFrom=" + accountFrom +
                 ", accountTo=" + accountTo +
                 ", amount=" + amount +
